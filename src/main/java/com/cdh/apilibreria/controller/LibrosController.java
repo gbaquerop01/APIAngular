@@ -3,6 +3,7 @@ package com.cdh.apilibreria.controller;
 import com.cdh.apilibreria.model.Libro;
 import com.cdh.apilibreria.repository.LibroRepository;
 import com.cdh.apilibreria.unimplemented.controller.GenericController;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,23 +38,26 @@ public class LibrosController implements GenericController<Libro, String> {
         return ResponseEntity.ok(libroRepository.save(libro));
     }
 
-    @RequestMapping(path = "/api/libros", method = RequestMethod.PUT)
+    @PutMapping(path = "/api/libros")
     @Override
-    public ResponseEntity<Libro> put(Libro libro) {
+    @Transactional
+    public ResponseEntity<Libro> put(@RequestBody Libro libro) {
         if (libroRepository.existsByISBN(libro.getISBN())){
-            delete(libro.getISBN());
+            Libro byISBN = libroRepository.getLibroByISBN(libro.getISBN());
+            libro.setId(byISBN.getId());
             libroRepository.save(libro);
             return ResponseEntity.ok(libro);
         }
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(path = "/api/libros", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/api/libros/{ISBN}", method = RequestMethod.DELETE)
     @Override
-    public ResponseEntity<Libro> delete(String ISBN) {
+    @Transactional
+    public ResponseEntity<Libro> delete(@PathVariable String ISBN) {
         if (libroRepository.existsByISBN(ISBN)) {
             Libro libro = libroRepository.getLibroByISBN(ISBN);
-            libroRepository.deleteByISBN(libro.getISBN());
+            libroRepository.delete(libro);
             return ResponseEntity.ok(libro);
         }
         return ResponseEntity.notFound().build();

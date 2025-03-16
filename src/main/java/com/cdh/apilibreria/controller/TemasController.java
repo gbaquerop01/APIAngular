@@ -6,10 +6,7 @@ import com.cdh.apilibreria.unimplemented.controller.GenericController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class TemasController implements GenericController<Temas, Integer> {
         return ResponseEntity.ok(temaRepository.findAll());
     }
 
-    @RequestMapping(path = "/api/temas", method = RequestMethod.POST)
+    @PostMapping(path = "/api/temas")
     @Override
     public ResponseEntity<Temas> post(@RequestBody Temas temas) {
         if (temaRepository.existsById(temas.getId())) {
@@ -46,13 +43,14 @@ public class TemasController implements GenericController<Temas, Integer> {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(path = "/api/temas", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/api/temas/{id}")
     @Override
-    public ResponseEntity<Temas> delete(Integer id) {
+    public ResponseEntity<Temas> delete(@PathVariable Integer id) {
         if (temaRepository.existsById(id)) {
+            System.out.println("id: " + id);
             Temas temas = temaRepository.getReferenceById(id);
-            temaRepository.delete(temas);
-            return ResponseEntity.ok(temas);
+            temaRepository.deleteById(id);
+            return ResponseEntity.ok(new Temas());
         }
         return ResponseEntity.notFound().build();
     }

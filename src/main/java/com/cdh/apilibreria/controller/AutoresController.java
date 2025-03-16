@@ -6,10 +6,7 @@ import com.cdh.apilibreria.unimplemented.controller.GenericController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,16 +36,15 @@ public class AutoresController implements GenericController<Autor, Integer> {
     @Override
     public ResponseEntity<Autor> put(@RequestBody Autor autor) {
         if (autorRepository.existsById(autor.getId())) {
-            delete(autor.getId());
             autorRepository.save(autor);
             return ResponseEntity.ok(autor);
         }
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(path = "/api/autores", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/api/autores/{id}")
     @Override
-    public ResponseEntity<Autor> delete(Integer id) {
+    public ResponseEntity<Autor> delete(@PathVariable Integer id) {
         if (autorRepository.existsById(id)) {
             Autor autor = autorRepository.getReferenceById(id);
             autorRepository.delete(autor);
