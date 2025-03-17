@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +29,10 @@ public class Factura {
 
     @NonNull
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Libro> libros;
+    private List<Libro> libros = new ArrayList<>();
 
 
+    public void addLibro(Libro libro) {
+        libros.add(libro);
+    }
 }

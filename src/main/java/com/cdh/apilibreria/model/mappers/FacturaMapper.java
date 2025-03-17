@@ -10,7 +10,6 @@ public class FacturaMapper implements Mapper<Factura, FacturaDTO> {
     public Factura mapToEntity(FacturaDTO dto) {
         Factura factura = new Factura();
         factura.setTotalFactura(dto.precio());
-        factura.setLibros(dto.libros());
         factura.setFecha(LocalDate.now());
         return factura;
     }
